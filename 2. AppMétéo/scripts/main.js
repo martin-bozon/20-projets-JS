@@ -1,3 +1,5 @@
+import tableJourOrdre from './Utilitaire/gestionTemps.js';
+
 const CleaAPI = '963043c0bc453489840bf34f01be206d';
 let resultatsAPI;
 const temps = document.querySelector('.temps');
@@ -5,6 +7,10 @@ const temperature = document.querySelector('.temperature');
 const localisation = document.querySelector('.localisation');
 const heure = document.querySelectorAll('.heure-prevision-nom');
 const tempPourH = document.querySelectorAll('.heure-prevision-valeur');
+const joursDiv = document.querySelectorAll('.jour-prevision-nom');
+const tempJourDiv = document.querySelectorAll('.jour-prevision-temp');
+const imgIcone = document.querySelector('.logo-meteo');
+const chargementContainer = document.querySelector('.overlay-icone-chargement');
 
 if(navigator.geolocation)
     {
@@ -29,10 +35,9 @@ function AppelAPI(long, lat, CleaAPI, temps, temperature, localisation)
                 return reponse.json();
             })
         .then((data) =>
-            {
-                console.log(data);
+            {                
                 resultatsAPI = data;
-
+                
                 temps.innerText = resultatsAPI.current.weather[0].description;
                 temperature.innerText = `${Math.trunc(resultatsAPI.current.temp)}°`;
                 localisation.innerText = resultatsAPI.timezone;
@@ -63,5 +68,26 @@ function AppelAPI(long, lat, CleaAPI, temps, temperature, localisation)
                         tempPourH[j].innerText = `${Math.trunc(resultatsAPI.hourly[j*3].temp)}°`;
                     }
 
+                // 3 première lettre jours
+                for(let k = 0; k<tableJourOrdre.length; k++)
+                    {
+                        joursDiv[k].innerText = tableJourOrdre[k].slice(0,3);
+                    }
+                // Ajout température par jour                                    
+                for(let m = 0; m<tableJourOrdre.length; m++)
+                    {                        
+                        tempJourDiv[m].innerText = `${Math.trunc(resultatsAPI.daily[m+1].temp.day)}°`;
+                    }
+                // Affichage incon
+                if(heureActuelle >=6 && heureActuelle < 21)
+                    {
+                        imgIcone.src = 'ressources/jour/'+resultatsAPI.current.weather[0].icon+'.svg';
+                    }
+                else
+                    {
+                        imgIcone.src = 'ressources/nuit/'+resultatsAPI.current.weather[0].icon+'.svg';
+                    }
+                
+                chargementContainer.classList.add('disparition');
             });
     }
