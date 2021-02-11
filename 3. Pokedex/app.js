@@ -29,15 +29,15 @@ function fetchPokemonComplet(pokemon)
 
                 fetch(`https://pokeapi.co/api/v2/pokemon-species/${nameP}`)
                 .then(response => response.json()
-                    // {
-                    // if(response.status !== 404)
-                    //     {
-                    //         response.json()
-                    //         // console.log('toto');
-                    //         // console.log(response);
-                    //     }
-                    // else
-                    //     console.log('tata');
+                //     {
+                //     if(response.status === 404)
+                //         {
+                //             // response.json()
+                //             console.log('toto');                            
+                //             // console.log(response);
+                //         }
+                //     // else
+                //     //     console.log('tata');
                 // }
                 )
                 .then((pokeData) => 
@@ -46,13 +46,13 @@ function fetchPokemonComplet(pokemon)
                         objPokemonFull.name = pokeData.names[4].name;
                         // console.log(objPokemonFull);
                         allPokemon.push(objPokemonFull);
-                        console.log(allPokemon);
-                        // if(allPokemon.length === 151)
-                        //     {
-                        //         console.log(allPokemon);
-                        //     }
+                        // console.log(allPokemon);
+                        if(allPokemon.length === 149)
+                            {
+                                console.log(allPokemon);
+                            }
                     });
-
+                    //    console.log(allPokemon);     
             });
     };
 // Animation input
