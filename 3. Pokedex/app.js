@@ -3,6 +3,7 @@ let allPokemon = [];
 let tableauFin = []; 
 const listePoke = document.querySelector('.liste-poke');
 const chargement = document.querySelector('.loader');
+const main = document.querySelector('main');
 
 const types = {
     grass: '#78c850',
@@ -89,7 +90,8 @@ function createCard(tableau)
                 let courleur = types[tableau[i].type];
                 carte.style.background = courleur;
                 carte.classList.add("carte")
-                carte.setAttribute('id', tableau[i].id)
+                carte.setAttribute('id', tableau[i].id);
+                carte.classList.add('myBtn')
                 const txtCarte = document.createElement('h5');
                 txtCarte.innerText = tableau[i].name;
                 const idCarte = document.createElement('span');
@@ -112,11 +114,94 @@ function createCard(tableau)
 // Modal
 function modal()
     {
-        const li = document.getElementsByClassName('carte').length;                                           
-                                        
-        console.log(li);  
-    }
+        const li = document.getElementsByClassName('carte');                                           
+        
+        for(i=0; i<li.length ; i++)
+            {                                
+                let a = i;
+                li[i].addEventListener('click', () =>
+                    {
+                        let id = li[a].getAttribute('id');                                            
+                        fetchPokeModal(id);                                                
+                    })
+            }
+    }                
 
+// Modal
+function fetchPokeModal(id)
+    {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+        .then(reponse => reponse.json())
+        .then((pokemon) =>
+            {                
+                fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`)
+                .then(response => response.json())
+                .then((pokeData) => 
+                    {                                              
+                        const nom = document.createElement('p');
+                        nom.innerText = pokeData.names[4].name;
+
+                        const modal = document.createElement('div');
+                        modal.classList.add('modal');                        
+                        
+                        const divModal = document.createElement('div');
+                        divModal.classList.add('modal-content');
+        
+                        // const close = document.createElement('span');
+                        // close.classList.add('close');
+                        // close.innerText = 'fermer';
+        
+                        const poids = document.createElement('p');
+                        poids.innerText = 'Poids : ' +pokemon.weight/10 + ' kg';
+        
+                        const taille = document.createElement('p');
+                        taille.innerText = 'Taille :' +pokemon.height/10 + ' m';
+        
+                        const stats = document.createElement('div');
+                        const statTitle = document.createElement('h4')
+                        const hp = document.createElement('p');
+                        const attaque = document.createElement('p');
+                        const defense = document.createElement('p');
+                        const aSpe = document.createElement('p');
+                        const dSpe = document.createElement('p');
+                        const vitesse = document.createElement('p');
+        
+                        statTitle.innerText = 'Statistiques';
+                        hp.innerText = 'PV : '+pokemon.stats[0].base_stat;
+                        attaque.innerText ='Attaque : ' +pokemon.stats[1].base_stat;
+                        defense.innerText = 'Défense : ' +pokemon.stats[2].base_stat;
+                        aSpe.innerText = 'Attaque Spé : ' +pokemon.stats[3].base_stat;
+                        dSpe.innerText = 'Défense Spé : ' +pokemon.stats[4].base_stat;
+                        vitesse.innerText = 'Vitesse : ' +pokemon.stats[5].base_stat;
+        
+                        // Initialisation des éléments
+                        stats.appendChild(statTitle)
+                        stats.appendChild(hp);
+                        stats.appendChild(attaque);
+                        stats.appendChild(defense);
+                        stats.appendChild(aSpe);
+                        stats.appendChild(dSpe);
+                        stats.appendChild(vitesse);
+                        
+                        // divModal.appendChild(close);
+                        divModal.appendChild(nom);
+                        divModal.appendChild(poids);
+                        divModal.appendChild(taille);
+                        divModal.appendChild(stats);
+                        
+                        modal.appendChild(divModal);
+                        
+                        main.appendChild(modal);
+                        modal.style.display = "block";
+
+                        // When the user clicks anywhere, close it
+                        window.onclick = function() 
+                            {                                
+                                modal.style.display = "none";                                                                      
+                            }
+                    });        
+            })
+    }
 // Scroll
 window.addEventListener('scroll', () =>{
     const {scrollTop, scrollHeight, clientHeight} = document.documentElement;
@@ -136,7 +221,7 @@ function addPoke(nb)
             }
         const arrToAdd = allPokemon.slice(index, index+nb);
         createCard(arrToAdd);
-       modal();   
+        modal();   
         index += nb;
     }
 
