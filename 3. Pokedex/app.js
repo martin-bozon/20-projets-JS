@@ -39,31 +39,43 @@ function fetchPokemonComplet(pokemon)
     {
         let objPokemonFull = {};
         let url = pokemon.url;
-        let nameP = pokemon.name;
+        let nameP = pokemon.name;        
         let pokeData ={};
 
         fetch(url)
         .then(response => response.json())
-        .then((pokeData) => {
+        .then((pokeData) => 
+            {                
                 objPokemonFull.pic = pokeData.sprites.front_default;
                 objPokemonFull.type = pokeData.types[0].type.name;
                 objPokemonFull.id = pokeData.id;
+                let typeP = pokeData.types[0].type.name;
 
                 fetch(`https://pokeapi.co/api/v2/pokemon-species/${nameP}`)
                 .then(response => response.json())
                 .then((pokeData) => 
-                    {                                                                     
+                    {                      
                         objPokemonFull.name = pokeData.names[4].name;
-                        allPokemon.push(objPokemonFull);
-                        if(allPokemon.length === 151)
-                            {
-                                tableauFin = allPokemon.sort((a,b) => {
-                                    return a.id - b.id;
-                                }).slice(0,21);
-                                
-                                createCard(tableauFin);
-                                chargement.style.display = "none";
-                            }
+
+                        fetch(`https://pokeapi.co/api/v2/type/${typeP}`)
+                        .then(reponse => reponse.json())
+                        .then((pokeType) =>
+                            {                                                                                 
+                                objPokemonFull.typeFr = pokeType.names[2].name;                               
+                                objPokemonFull.faible = pokeType.damage_relations.double_damage_from;
+                                objPokemonFull.fort = pokeType.damage_relations.double_damage_to;                            
+                                allPokemon.push(objPokemonFull);
+                                if(allPokemon.length === 151)
+                                    {
+                                        tableauFin = allPokemon.sort((a,b) => {
+                                            return a.id - b.id;
+                                        }).slice(0,21);
+                                        
+                                        createCard(tableauFin);
+                                        modal();                                                                     
+                                        // chargement.style.display = "none";
+                                    }
+                            })
                     });  
             });
     };
@@ -76,19 +88,33 @@ function createCard(tableau)
                 const carte = document.createElement('li');
                 let courleur = types[tableau[i].type];
                 carte.style.background = courleur;
+                carte.classList.add("carte")
+                carte.setAttribute('id', tableau[i].id)
                 const txtCarte = document.createElement('h5');
                 txtCarte.innerText = tableau[i].name;
-                const idCarte = document.createElement('p');
+                const idCarte = document.createElement('span');
                 idCarte.innerText = `ID# ${tableau[i].id}`;
                 const imgCarte= document.createElement('img');
                 imgCarte.src = tableau[i].pic;
+                const typeCarte = document.createElement('p');
+                typeCarte.innerText = `Type : ${tableau[i].typeFr}`
 
                 carte.appendChild(imgCarte);
                 carte.appendChild(txtCarte);
                 carte.appendChild(idCarte);
+                carte.appendChild(typeCarte);
 
                 listePoke.appendChild(carte);
-            }
+
+            }            
+    }
+
+// Modal
+function modal()
+    {
+        const li = document.getElementsByClassName('carte').length;                                           
+                                        
+        console.log(li);  
     }
 
 // Scroll
@@ -110,6 +136,7 @@ function addPoke(nb)
             }
         const arrToAdd = allPokemon.slice(index, index+nb);
         createCard(arrToAdd);
+       modal();   
         index += nb;
     }
 
@@ -130,17 +157,19 @@ function recherche()
             {
                 addPoke(130);
             }
-        let filter, allLi, titleValue, allTitles;
+        let filter, allLi, titleValue, allTitles, allType, typyValue;
         filter = searchInput.value.toUpperCase();
         allLi = document.querySelectorAll('li');
         // tous les h5 présent dans les li
         allTitles = document.querySelectorAll('li > h5');
+        allType = document.querySelectorAll('li > p');
 
         for(i=0; i< allLi.length; i++)
             {
                 titleValue = allTitles[i].innerText;
+                typeValue = allType[i].innerText;
 
-                if(titleValue.toUpperCase().indexOf(filter) > -1)
+                if(titleValue.toUpperCase().indexOf(filter) > -1 || typeValue.toUpperCase().indexOf(filter) > -1)
                     {
                         allLi[i].style.display = "flex";
                     }
