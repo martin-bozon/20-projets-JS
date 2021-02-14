@@ -176,3 +176,24 @@ ul
     text-decoration: none;
     cursor: pointer;
   }
+.info-poke
+  {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 3px;
+  }
+.stats
+  {
+      display: flex;
+      flex-direction: column;
+  }
+.info-poke h3   
+  {
+      display: flex;
+      justify-content: center;
+  }
+.stats p, .info-poke p  
+  {
+      /* margin-left: 20px; */
+      margin: 5px 20px 0;
+  }

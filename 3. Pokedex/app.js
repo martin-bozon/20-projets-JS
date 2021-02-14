@@ -87,8 +87,8 @@ function createCard(tableau)
         for(let i = 0; i<tableau.length; i++)
             {
                 const carte = document.createElement('li');
-                let courleur = types[tableau[i].type];
-                carte.style.background = courleur;
+                let couleur = types[tableau[i].type];
+                carte.style.background = couleur;
                 carte.classList.add("carte")
                 carte.setAttribute('id', tableau[i].id);
                 carte.classList.add('myBtn')
@@ -134,30 +134,33 @@ function fetchPokeModal(id)
         .then(reponse => reponse.json())
         .then((pokemon) =>
             {                
+                console.log(pokemon);
                 fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`)
                 .then(response => response.json())
                 .then((pokeData) => 
-                    {                                              
-                        const nom = document.createElement('p');
-                        nom.innerText = pokeData.names[4].name;
-
+                    {                               
                         const modal = document.createElement('div');
-                        modal.classList.add('modal');                        
-                        
+                        modal.classList.add('modal');                                                                   
                         const divModal = document.createElement('div');
+                        let couleurbg = types[pokemon.types[0].type.name];
                         divModal.classList.add('modal-content');
+                        divModal.style.background = couleurbg;  
+                        const infoPoke = document.createElement('div');
+                        infoPoke.classList.add('info-poke');
+                        const nom = document.createElement('h3');                        
+                        const poids = document.createElement('p');                        
+                        const taille = document.createElement('p');
+
+                        nom.innerText = pokeData.names[4].name;
+                        poids.innerText = 'Poids : ' +pokemon.weight/10 + ' kg';
+                        taille.innerText = 'Taille :' +pokemon.height/10 + ' m';
         
                         // const close = document.createElement('span');
                         // close.classList.add('close');
                         // close.innerText = 'fermer';
         
-                        const poids = document.createElement('p');
-                        poids.innerText = 'Poids : ' +pokemon.weight/10 + ' kg';
-        
-                        const taille = document.createElement('p');
-                        taille.innerText = 'Taille :' +pokemon.height/10 + ' m';
-        
                         const stats = document.createElement('div');
+                        stats.classList.add('stats');
                         const statTitle = document.createElement('h4')
                         const hp = document.createElement('p');
                         const attaque = document.createElement('p');
@@ -173,7 +176,17 @@ function fetchPokeModal(id)
                         aSpe.innerText = 'Attaque Spé : ' +pokemon.stats[3].base_stat;
                         dSpe.innerText = 'Défense Spé : ' +pokemon.stats[4].base_stat;
                         vitesse.innerText = 'Vitesse : ' +pokemon.stats[5].base_stat;
-        
+                                
+                        main.appendChild(modal);
+                        modal.appendChild(divModal);
+
+                        // divModal.appendChild(close);
+                        divModal.appendChild(infoPoke)
+                        infoPoke.appendChild(nom);
+                        infoPoke.appendChild(poids);
+                        infoPoke.appendChild(taille);
+                        infoPoke.appendChild(stats);
+
                         // Initialisation des éléments
                         stats.appendChild(statTitle)
                         stats.appendChild(hp);
@@ -181,17 +194,8 @@ function fetchPokeModal(id)
                         stats.appendChild(defense);
                         stats.appendChild(aSpe);
                         stats.appendChild(dSpe);
-                        stats.appendChild(vitesse);
+                        stats.appendChild(vitesse);                                                
                         
-                        // divModal.appendChild(close);
-                        divModal.appendChild(nom);
-                        divModal.appendChild(poids);
-                        divModal.appendChild(taille);
-                        divModal.appendChild(stats);
-                        
-                        modal.appendChild(divModal);
-                        
-                        main.appendChild(modal);
                         modal.style.display = "block";
 
                         // When the user clicks anywhere, close it
