@@ -74,7 +74,7 @@ function fetchPokemonComplet(pokemon)
                                         
                                         createCard(tableauFin);
                                         modal();                                                                     
-                                        // chargement.style.display = "none";
+                                        chargement.style.display = "none";
                                     }
                             })
                     });  
@@ -161,7 +161,7 @@ function fetchPokeModal(id)
         
                         const stats = document.createElement('div');
                         stats.classList.add('stats');
-                        const statTitle = document.createElement('h4')
+                        const statTitle = document.createElement('h3')
                         const hp = document.createElement('p');
                         const attaque = document.createElement('p');
                         const defense = document.createElement('p');
@@ -185,7 +185,7 @@ function fetchPokeModal(id)
                         infoPoke.appendChild(nom);
                         infoPoke.appendChild(poids);
                         infoPoke.appendChild(taille);
-                        infoPoke.appendChild(stats);
+                        divModal.appendChild(stats);
 
                         // Initialisation des éléments
                         stats.appendChild(statTitle)
@@ -202,7 +202,7 @@ function fetchPokeModal(id)
                         window.onclick = function() 
                             {                                
                                 modal.style.display = "none";                                                                      
-                            }
+                            }                        
                     });        
             })
     }
